@@ -1,7 +1,11 @@
 plugins {
     id 'java'
+    id 'application'
 }
-
+application {
+    mainClass = 'hexlet.code.App'
+    applicationDefaultJvmArgs = ['-Dgreeting.language=en']
+}
 group 'hexlet.code'
 version '1.0-SNAPSHOT'
 
@@ -16,4 +20,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+compileJava {
+    options.release = 17 as Property<Integer>
 }
