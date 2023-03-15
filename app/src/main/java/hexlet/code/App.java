@@ -11,7 +11,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -37,8 +40,10 @@ public class App {
             String content1 = Files.readString(pathToFile1);
             String content2 = Files.readString(pathToFile2);
             ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, Object> map1 = objectMapper.readValue(content1, new TypeReference<Map<String,Object>>(){});
-            Map<String, Object> map2 = objectMapper.readValue(content2, new TypeReference<Map<String,Object>>(){});
+            Map<String, Object> map1 = objectMapper.readValue(content1, new TypeReference<>() {
+            });
+            Map<String, Object> map2 = objectMapper.readValue(content2, new TypeReference<>() {
+            });
 
             System.out.print("{\n" + differGenerator(map1, map2) + "}\n");
             return 0;
@@ -56,12 +61,13 @@ public class App {
                     results.add(new Result("-", entry1.getKey(), entry1.getValue(), 1));
                     results.add(new Result("+", entry1.getKey(), map2.get(entry1.getKey()), 2));
                 }
-            } else
+            } else {
                 results.add(new Result("-", entry1.getKey(), entry1.getValue(), 1));
+            }
 
         }
         for (Map.Entry<String, Object> entry2 : map2.entrySet()) {
-            if(!map1.containsKey(entry2.getKey())) {
+            if (!map1.containsKey(entry2.getKey())) {
                 results.add(new Result("+", entry2.getKey(), entry2.getValue(), 2));
             }
         }
@@ -70,7 +76,7 @@ public class App {
                         Comparator.comparing(Result::getKey)
                                 .thenComparing(Result::getFileMarker))
                 .collect(Collectors.toList());
-        for(Result r : sortedResults) {
+        for (Result r : sortedResults) {
             sortedResultAsString = sortedResultAsString + " " + r.compareValue + " " + r.key + ": " + r.value + "\n";
         }
         return sortedResultAsString;
@@ -86,7 +92,7 @@ public class App {
             this.value = value;
             this.fileMarker = fileMarker;
         }
-        public String getKey(){
+        public String getKey() {
             return key;
         }
         public int getFileMarker() {
